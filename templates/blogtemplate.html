@@ -1,0 +1,327 @@
+{% extends "struct.html" %}
+
+{% block content %}
+<div class="content">
+    <div class="inner-content">
+        <div class="title">{{inf["title"]}}</div><br>
+        <div class="tags">Теги: <div class="tagsList">{% for i in inf["tag"] %}{% if i != "Контент" %}{{i.lower()}}{% if inf["tag"][-1] != i %}/{% endif %}{% endif %}{% endfor %}</div></div>
+        <div class="inf">
+            <div class="author">Автор: <a href="{{url_for('show_user', login = inf['author'])}}" class="authorLogin"> {{inf["author"]}}</a></div>
+            <div class="time-of-creation"><div class="icon"></div>{{inf["date_of_creation"]}}</div>
+        </div><br>
+
+        {% block inner %}
+
+        {% endblock %}
+
+    
+    </div>
+
+    <div class = "comment-block" id = "{{inf['ID']}}">
+        <form action="JavaScript:sendCommentToPost()" class="to-comment">
+            <textarea maxlength="3000" id="send-comm-text" class = "text" placeholder="Поделитесь мнением..."></textarea><br>
+            <button type="submit" id="send-comm-button">Отправить</button>
+        </form>
+
+        <div class="comments-list">
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .inner-content .blog-text div, .inner-content .blog-text p, 
+    .inner-content .blog-text li, .inner-content .blog-text a, 
+    .inner-content .blog-text strike {
+        font-size: 22px;
+        font-family: Times New Roman, Times, serif;
+        color: #0a0a0a;
+        line-height: 1.5;
+    }
+    .inf:not(.small) { display: block; }
+    .inf:not(.small) .author, .inf:not(.small) .authorLogin, .inf:not(.small) .time-of-creation { font-size: 25px; }
+    .inf:not(.small) .author, .inf:not(.small) .time-of-creation { margin-top: 15px; }
+    .inf:not(.small) .icon { height: 25px; width:  25px; background-size: 25px 25px; }
+
+    /* Images */
+    .img { 
+        display: flex;
+        justify-content: center; 
+    }
+    .img img {
+        height: auto;
+        width: auto;
+        margin: auto;
+        max-height: 100%;
+        max-width: 100%;
+    }
+    .img .author {
+        color: #333 !important;
+        font-size: 15px !important;
+    }
+    
+    /* Blockquote style 1 */
+    .idea-block-1 {
+        margin-left: 20px;
+    }
+    .idea-block-1 .idea, .idea-block-1 .idea p {
+        font-style: italic;
+        font-size: 25px !important;
+        font-weight: 10px;
+        line-height: 1.6;
+    }
+    .idea-block-1 .idea-author {
+        color: #6c7781;
+        font-size: 16px !important;
+    }
+
+    /* Blockquote style 2 */
+    .idea-block-2 {
+        margin-left: 20px;
+        height: 100%;
+    }
+    .idea-block-2 {
+        border-left: 4px solid #0a0a0a;
+        padding-left: 10px;
+    }
+    .idea-block-2 .idea, .idea-block-2 .idea p {
+        font-style: italic;
+        font-size: 24px !important;
+        font-weight: 10px;
+        line-height: 1.6;
+    }
+    .idea-block-2 .idea-author {
+        color: #6c7781;
+        font-size: 16px !important;
+    }
+
+    /* Blockqueote style 3 */
+    .idea-block-3 {
+        text-align: center;
+    }
+    .idea-block-3 .idea {
+        font-style: italic;
+        font-size: 24px !important;
+        font-weight: 10px;
+        line-height: 1.6;
+    }
+    .idea-block-3 .idea-author {
+        color: #6c7781;
+        font-size: 16px !important;
+    }
+
+    /* Rows */
+    .row {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        grid-column-gap: 10px;
+    }
+
+
+    /* Adaptation ^_^ */
+    /* Very large desktops and zoom out*/
+    @media (max-width: 2000px) { 
+        
+    }
+    /* Large desktops and laptops */
+    @media (max-width: 1300px){
+
+    }
+    /* Portrait tablets and medium desktops */
+    @media (min-width: 992px) and (max-width: 1199px) {
+
+    }
+    /* Portrait tablets and small desktops */
+    @media (min-width: 768px) and (max-width: 991px) {
+        .inner-content .blog-text div, .inner-content .blog-text p {
+            font-size: 14px;
+        }
+    }
+    /* Landscape phones and portrait tablets */
+    @media screen and (max-width: 767px) {
+        .inner-content .blog-text div, .inner-content .blog-text p {
+            font-size: 18px;
+        }
+        .idea-block-2 .idea, .idea-block-2 .idea p {
+            font-size: 20px;
+        }
+        .row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<script>
+    let text = document.getElementById("send-comm-text")
+    let Id = document.getElementsByClassName("comment-block")[0].id
+    function sendCommentToPost() {
+        if (text.value != "") {
+            $.post("/new-comment", {
+                onComment : null,
+                ID : Id,
+                text : text.value
+            }).done(function(response) {
+                text.value = "";
+                loadComments();
+            })
+        }
+    }
+
+    let prevSlide = null
+    function commentComment(id) {
+        $("#sendOn"+id).slideToggle()
+        if (prevSlide != id && prevSlide != null) {
+            $("#sendOn"+prevSlide).slideUp()
+        }
+        prevSlide = id
+    };
+
+    function sendCommentToComment(commId) {
+        comm = document.getElementById("sendOn"+String(commId)).getElementsByClassName("text")[0]
+        if (comm.value != "") {
+            $.post("/new-comment", {
+                onComment : commId,
+                ID : Id,
+                text : comm.value
+            }).done(function(response) {
+                comm.value = "";
+                commentComment(commId)
+                loadComments();
+            })
+        }
+    }
+
+    function deleteComment(ID) {
+        $.post("/delete-comment/"+ID).done(function(){ loadComments(); })
+    };
+
+
+
+    let role = "{{uinfo['role']}}";
+    let login = String("{{uinfo['login']}}");
+    function createComment(comment) {
+        element = document.createElement("div");
+        onComm = comment["onComment"]
+        if (onComm) { element.classList = "commentOnComment"; }
+        else { element.classList = "comment"; }
+        element.id = "comment"+String(comment["ID"]);
+        innerContent =      "<a class = 'userimg' href='/show-user/"+comment["userLogin"]+"'><img src='/static/user_imgs/"+comment["userImg"]+"'></a>"+
+                            "<div class='login'><a class='transport' href='/show-user/"+comment["userLogin"]+"'>"+comment["userLogin"]+"</a></div>"+
+                            "<div class='controller'><a class='icon' href='javascript:void(0)'></a><div class='drop'>"
+        if (login == comment["userLogin"]) {
+            innerContent += "<a href = 'javascript:deleteComment("+comment["ID"]+")'>Удалить</a>";
+        } else {
+            innerContent += "<a>Пожаловаться</a>";
+        };
+        innerContent +=     "</div></div>"+
+                            "<div class='time'>"+comment["time"]+"</div> <div class='date'>"+comment["created"]+"</div>"
+        if (onComm) {
+            login = document.getElementById("comment"+onComm).getElementsByClassName("login")[0].getElementsByClassName("transport")[0].innerHTML
+            innerContent += "<a href='#comment"+onComm+"' class='answer'> Ответ <div class='ans-login'>"+login+"</div></a>" 
+        }
+        innerContent +=     "<pre class='text'>"+comment["text"]+"</pre>"+
+                            "<div class='bottom'>"+
+                            "<div class='line l'></div>"+
+                            "<div class='like'><div class='count'>"+comment["likes"]+"</div><a href='javascript:likeComment("+comment["ID"]+")' class='icon' title = 'Одобряю'></a></div>"+
+                            "<div class='line'></div>"+
+                            "<div class='dislike'><div class='count'>"+comment["dislikes"]+"</div><a href='javascript:dislikeComment("+comment["ID"]+")' class='icon' title = 'Не одобряю'></a></div>"+
+                            "<div class='line'></div>"+
+                            "<div class='comm'><a href='javascript:commentComment("+comment["ID"]+")' class='icon' title = 'Ответить'></a></div>"+
+                            "<div class='line'></div>"+
+                            "</div>"+
+                            "<div class='sendOn' id='sendOn"+comment["ID"]+"' style='display:none'>"+
+                            "<textarea class='text' maxlength='3000' placeholder='Ответ...'></textarea>"+
+                            "<div class='commit'><a href='javascript:sendCommentToComment("+comment["ID"]+")' class='icon'></a></div>"+
+                            "</div>";
+            if (onComm == undefined) { innerContent += "<div class='commsOnComm'></div>"; }
+            element.innerHTML = innerContent
+        return element
+    }
+
+
+    function to_sort(arr) {
+        let arr2 = []
+        for (let i = 0; i < arr.length; i++) {
+            arr2[arr[i]["ID"]] = arr[i];
+        }
+        return (arr2)
+    } 
+
+
+    let block = document.getElementsByClassName("comments-list")[0]
+    function showComms(result, uid) {
+        result = to_sort(result)
+        for (let i = 0; i < result.length; i++) {
+            if (result[i]) {
+                if (result[i]["deleted"] == 0) {
+                    if (document.getElementById("comment"+i) == undefined) {
+                        if (result[i]["onComment"] == null) {
+                            comment = createComment(result[i]);
+                            block.insertBefore(comment, document.getElementsByClassName("comment")[0])
+                        } else {
+                            comment = createComment(result[i]);
+                            fcomment = document.getElementById("comment"+result[i]["onFComment"]).getElementsByClassName("commsOnComm")[0];
+                            if (result[i]["onFComment"] == result[i]["onComment"]) {
+                                fcomment.insertBefore(comment, fcomment.getElementsByClassName("commentOnComment")[0])
+                            } else {
+                                fcomment.insertBefore(comment, document.getElementById("comment"+result[i]["onComment"]).nextSibling)
+                            }
+                        }
+                    }
+
+                    let comm = document.getElementById("comment"+i);
+                    if (comm) {
+                        iconLike = comm.getElementsByClassName("like")[0].getElementsByClassName("icon")[0]
+                        iconDis = comm.getElementsByClassName("dislike")[0].getElementsByClassName("icon")[0]
+                        
+                        if (String(result[i]["likers"]).includes(String(uid))) { iconLike.classList = "icon active" }
+                        else { iconLike.classList = "icon" }
+                        if (String(result[i]["dislikers"]).includes(String(uid))) { iconDis.classList = "icon active" } 
+                        else { iconDis.classList = "icon" }
+
+                        comm.getElementsByClassName("like")[0].getElementsByClassName("count")[0].innerHTML = result[i]["likes"]
+                        comm.getElementsByClassName("dislike")[0].getElementsByClassName("count")[0].innerHTML = result[i]["dislikes"]
+                    }
+                } else {
+                    comm = document.getElementById("comment"+i)
+                    if (comm) { comm.remove(); };
+                }
+            }
+        }
+    }
+
+
+
+    function loadComments() {
+        $.post("/get-comments", {
+            ID : Id
+        }).done(function(response) {
+            showComms(response[0], response[1])
+        });
+    };
+    window.onload = function() { 
+        loadComments();
+    };
+    let timer = setInterval(function() {
+        loadComments();
+    }, 30000);
+
+
+
+    function likeComment(id) {
+        $.post("/react-on-comment", {
+            ID : id,
+            reaction : "like"
+        }).done(function(response) { loadComments(); })   
+    };
+    function dislikeComment(id) {
+        $.post("/react-on-comment", {
+            ID : id,
+            reaction : "dislike"
+        }).done(function(response) { loadComments(); })   
+    };
+
+
+
+</script>
+{% endblock %}

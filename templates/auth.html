@@ -1,0 +1,233 @@
+{% extends "struct.html" %}
+
+{% block content %}
+<div class="content">
+    <div class="auth-block">
+        <form action="{{url_for('login')}}" method="POST">
+            <div class="labe">Вход:</div>
+            <p id="errormassage">{% if errorMes %}&#10008; {{errorMes}}{% endif %}</p>
+            <div class="form-group">
+                <input type="text" id="login" name="login" placeholder="псевдоним или email">
+            </div>
+
+            <div class="form-group password">
+                <input type="password" id="passw" name="passw" placeholder="пароль">
+                <a href="#" id = "passw-control" class="password-control" onclick="return show_hide_password();"></a>
+            </div>
+
+            <button class="submit">Войти</button>
+        </form>
+        <a href="{{url_for('go_register')}}"><bold>Зарегестрироваться</bold></a>
+        <div class="small">Войдя в систему, вы получите уникальную возможность комментировать наши посты под своим именем. Мы не только читаем, но и учитываем!</div>
+    </div>
+</div>
+<style>
+    .content {
+        background-image: url("{{url_for('static', filename='flag.png')}}");
+        background-repeat: no-repeat;
+        -moz-background-size: 100%;
+        -webkit-background-size: 100%;
+        -o-background-size: 100%;
+        background-size: 100%;
+        height: 100vh;
+        position: relative;
+        margin-top: 0 !important;
+    }
+    .auth-block a {
+        font-size: 22px;
+        color: #78772b;
+    }
+    .labe {
+        font-size: 40px;
+    }
+    .small {
+        color: #7a6b99;
+        font-size: 18px;
+    }
+    #login, #passw {
+        width: 100%;
+        margin: 0;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        border: solid #78772b;
+        height: 40px;
+        padding-left: 4px;
+        padding-right: 4px;
+        color: #7a6b99;
+    }
+    .auth-block {
+        padding: 40px;
+        text-align: center;
+        width: auto;
+        background-color: rgb(235, 235, 235, 0.95);
+        border-radius: 5px;
+        position: absolute;
+        margin-top: 25%;
+        margin-left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .submit {
+        width: 200px;
+        height: 60px;
+        border-radius: 5px;
+        border: none;
+        background-color: #78772b;
+    }
+    #errormassage {
+        color: red;
+        font-size: 18px;
+    }
+    .labe, .submit, .auth-block a {
+        margin-bottom: 30px;
+    }
+    /* Very large desktops and zoom out*/
+    @media (max-width: 2000px) { 
+        
+    }
+    /* Large desktops and laptops */
+    @media (max-width: 1300px){
+        #login, #passw {
+            margin-bottom: 12px;
+            font-size: 20px;
+            border-radius: 4px;
+        }
+        .auth-block a bold {
+            font-size: 18px;
+        }
+        br {
+            line-height: 0px;
+        }
+        .labe {
+            font-size: 28px;
+        }
+        .small {
+            font-size: 16px;
+        }
+        .submit {
+            width: 180px;
+            height: 50px;
+        }
+        #errormassage {
+            font-size: 16px;
+        }
+        .labe, .submit, .auth-block a {
+            margin-bottom: 20px;
+        }
+    }
+    /* Portrait tablets and small desktops */
+    @media (min-width: 768px) and (max-width: 991px) {
+        #login, #passw {
+            margin-bottom: 8px;
+            font-size: 24px;
+            height: 30px;
+            border-radius: 3px;
+        }
+        .auth-block a bold {
+            font-size: 14px;
+        }
+        .labe {
+            font-size: 24px;
+        }
+        .small {
+            font-size: 14px;
+        }
+        .submit {
+            width: 180px;
+            height: 40px;
+            font-size: 20px;
+            outline: none;
+        }
+        #errormassage {
+            font-size: 14px;
+        }
+        .auth-block {
+            padding: 25px;
+        }
+        .labe, .submit, .auth-block a {
+            margin-bottom: 18px;
+        }
+    }
+    /* Landscape phones and portrait tablets */
+    @media screen and (max-width: 767px) and (orientation: landscape) {
+        #login, #passw {
+            margin-bottom: 4px;
+            font-size: 18px;
+        }
+        .auth-block a bold {
+            font-size: 16px;
+        }
+        .labe {
+            font-size: 20px;
+        }
+        .small {
+            font-size: 12px;
+        }
+        .submit {
+            width: 160px;
+            height: 40px;
+            font-size: 16px;
+        }
+        #errormassage {
+            font-size: 12px;
+        }
+        .auth-block {
+            padding: 20px;
+            width: 400px;
+        }
+        .labe, .submit, .auth-block a {
+            margin-bottom: 14px;
+        }
+    }
+    @media screen and (max-width: 767px) and (orientation: portrait) {
+        #login, #passw {
+            margin-bottom: 4px;
+            font-size: 18px;
+        }
+        .auth-block a bold {
+            font-size: 16px;
+        }
+        .labe {
+            font-size: 20px;
+        }
+        .small {
+            font-size: 12px;
+        }
+        .submit {
+            width: 160px;
+            height: 40px;
+            font-size: 16px;
+        }
+        #errormassage {
+            font-size: 12px;
+        }
+        .auth-block {
+            margin-top: 100%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            width: 90%;
+            opacity: 0.95;
+        }
+        .labe, .submit, .auth-block a {
+            margin-bottom: 14px;
+        }
+    }
+    .password {
+        position: relative;
+    }
+</style>
+<script>
+    let passw = document.getElementById('passw');
+    let passwcontroller = document.getElementById('passw-control');
+
+    function show_hide_password(target){
+        if (passw.getAttribute('type') == 'password') {
+            passwcontroller.classList.add('view');
+            passw.setAttribute('type', 'text');
+        } else {
+            passwcontroller.classList.remove('view');
+            passw.setAttribute('type', 'password');
+        }
+        return false;
+    }
+</script>
+{% endblock %}

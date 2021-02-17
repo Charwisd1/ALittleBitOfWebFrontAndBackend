@@ -1,0 +1,63 @@
+{% extends "blogtemplate.html" %}
+
+{% block inner %}
+    <div class="blog-text">
+        <div class="media-podcast">
+            <img src="{{url_for('static', filename='content/blog_media/Podcast1/image.jpg')}}">
+            <audio controls autoplay preload="auto" src="{{url_for('static', filename='content/blog_media/Podcast1/Подкаст-Русский-Восход-Деккомунизация-Часть-1.mp3')}}"></audio>
+        </div>
+    </div>
+    <style>
+        /* Audio */
+        @media (max-width: 2000px) { 
+            .media-podcast {
+                width: 1000px;
+                height: 1000px;
+                margin: auto;
+            }
+            .media-podcast audio{
+                width: inherit;
+                margin-top: inherit;
+            }
+            .media-podcast img{
+                height: inherit;
+                width: inherit;
+            }
+        }
+        /* Large desktops and laptops */
+        @media (max-width: 1300px){
+            .media-podcast {
+                width: 900px;
+                height: 900px;
+                margin: auto;
+            }
+        }
+        /* Portrait tablets and medium desktops */
+        @media (min-width: 992px) and (max-width: 1199px) {
+            .media-podcast {
+                width: 800px;
+                height: 800px;
+            }
+        }
+        /* Portrait tablets and small desktops */
+        @media (min-width: 768px) and (max-width: 991px) {
+            .media-podcast {
+                width: 550px;
+                height: 550px;
+            }
+        }
+        /* Landscape phones and portrait tablets */
+        @media screen and (max-width: 767px) {
+            .inner-content .blog-text div, .inner-content .blog-text p {
+                font-size: 18px;
+            }
+            .idea-block-2 .idea, .idea-block-2 .idea p {
+                font-size: 20px;
+            }
+            .media-podcast {
+                width: 300px;
+                height: 300px;
+            }
+        }
+    </style>
+{% endblock %}

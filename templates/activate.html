@@ -1,0 +1,82 @@
+{% extends "struct.html" %}
+
+{% block content %}
+<div class="content">
+    <div class="confirm-block">
+        <form class = "confirm-field" action="{{url_for('activate', user = request.args.get('user'))}}" method="POST">
+            <p class="labe">Для активации профиля мы выслали код подтверждения на Вашу электронную почту</p>
+            <div class="code-field">
+                {% if errorMess != None %}
+                    <div class="error">{{errorMess}}</div>
+                {% endif %}
+                <input type="text" id="code" class="code" placeholder="код" name="code">
+                <a class="small" href="{{url_for('resend_code', user = request.args.get('user'))}}" method="GET">Отправьте мне новый код активации</a>
+            </div>
+            <button class="submit" type="submit">Подтвердить</button>
+        </form>
+    </div>
+</div>
+<style>
+    .content {
+        background-image: url("{{url_for('static', filename='flag.png')}}");
+        background-repeat: no-repeat;
+        -moz-background-size: 100%;
+        -webkit-background-size: 100%;
+        -o-background-size: 100%;
+        background-size: 100%;
+        height: 100vh;
+        position: relative;
+        margin-top: 0 !important;
+    }
+    .labe {
+        font-size: 20px;
+    }
+    .error {
+        color: red;
+        font-size: 18px;
+    }
+    .small {
+        color: #78772b;
+        font-size: 22px;
+    }
+    .small, .labe, .error, .code-field {
+        margin-bottom: 20px;
+    }
+    #code {
+        width: 100%;
+        margin: 0;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        height: 40px;
+        border: solid #78772b;
+        padding-left: 4px;
+        padding-right: 4px;
+        color: #7a6b99;
+    }
+    .confirm-block {
+        padding: 40px;
+        text-align: center;
+        width: auto;
+        background-color: rgb(235, 235, 235, 0.95);
+        border-radius: 5px;
+        position: absolute;
+        margin-top: 25%;
+        margin-left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .submit {
+        width: 250px;
+        height: 60px;
+        border-radius: 5px;
+        border: none;
+        background-color: #78772b;
+    }
+    #errormassage {
+        color: red;
+        font-size: 18px;
+    }
+</style>
+<script>
+    
+</script>
+{% endblock %}
